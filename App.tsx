@@ -1,11 +1,19 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Home from './screens/Home';
 import Login from './screens/Login';
+import Signup from './screens/Signup';
+import ChoosePositionPage from './screens/ChoosePositionPage';
+import StatCounterPage from './screens/StatCounterPage';
+import HistoricalStats from './screens/HistoricalStats';
+import {
+  NativeStackScreenProps,
+  createNativeStackNavigator,
+} from '@react-navigation/native-stack';
+import { RootStackParamList } from './types/navigation'; // import interface
 
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const App: React.FC = () => {
   return (
@@ -14,7 +22,11 @@ const App: React.FC = () => {
       <NavigationContainer>
         <Stack.Navigator>
           <Stack.Screen name="Login" component={Login} />
+          <Stack.Screen name="Signup" component={Signup} />
           <Stack.Screen name="Home" component={Home} />
+          <Stack.Screen name="ChoosePosition" component={ChoosePositionPage} />
+          <Stack.Screen name="StatCounter" component={StatCounterPage} />
+          <Stack.Screen name="HistoricalStats" component={HistoricalStats} />
         </Stack.Navigator>
       </NavigationContainer>
     </>
