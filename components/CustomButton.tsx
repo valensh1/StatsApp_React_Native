@@ -62,8 +62,6 @@ const styles = StyleSheet.create({
     height: height * 0.05,
     marginTop: height * 0.02,
     borderRadius: 7,
-    borderColor: colors.globalSecondaryColor,
-    borderWidth: 2,
     backgroundColor: colors.globalSecondaryColor,
   },
   buttonText: {

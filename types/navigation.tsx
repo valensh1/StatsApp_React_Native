@@ -1,8 +1,9 @@
-// navigation.ts
+// Add screens here
 export interface RootStackParamList {
   Login: undefined;
   Signup: undefined;
   Home: undefined;
+  ChooseSport: undefined;
   ChoosePosition: { sport: string };
   StatCounter: { sport: string; position: string };
   HistoricalStats: { stats: string; calculatedStats: string };

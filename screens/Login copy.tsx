@@ -2,7 +2,6 @@ import { useState, useCallback, useEffect } from 'react';
 import { useIsFocused } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types/navigation'; // import the type
-import { LinearGradient } from 'expo-linear-gradient';
 import {
   View,
   Text,
@@ -13,7 +12,6 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   Alert,
-  Image,
 } from 'react-native';
 import CustomButton from '../components/CustomButton';
 import colors from '../styles/colors_app';
@@ -86,7 +84,7 @@ const Login: React.FC<Props> = ({ navigation }) => {
             email: loggedInUser[1].email,
             displayName: loggedInUser[1].displayName,
           });
-          navigation.navigate('ChooseSport');
+          navigation.navigate('Home');
         }
       } catch (error) {}
     } else {
@@ -101,19 +99,10 @@ const Login: React.FC<Props> = ({ navigation }) => {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <View style={styles.overallContainer}>
-        <Image
-          source={require('../images/YSG_Logo.png')}
-          style={styles.logo}
-          resizeMode="contain"
-        />
         <View style={styles.loginContainer}>
-          <Text style={styles.slogan}>
-            Track your stats. Build your future.
-          </Text>
           <View style={styles.singleFieldContainer}>
+            <Text style={styles.labels}>Email Address</Text>
             <TextInput
-              placeholder="Email"
-              placeholderTextColor={'#B0B0B0'}
               onChangeText={(text) => credentialHandler(text, 'emailAddress')}
               value={credentials.emailAddress}
               style={[styles.textInput, isFocused.email && styles.focusedState]}
@@ -122,9 +111,8 @@ const Login: React.FC<Props> = ({ navigation }) => {
               autoCapitalize="none"></TextInput>
           </View>
           <View style={styles.singleFieldContainer}>
+            <Text style={styles.labels}>Password</Text>
             <TextInput
-              placeholder="Password"
-              placeholderTextColor={'#B0B0B0'}
               onChangeText={(text) => credentialHandler(text, 'password')}
               value={credentials.password}
               style={[
@@ -142,10 +130,10 @@ const Login: React.FC<Props> = ({ navigation }) => {
             text={'Log In'}
             buttonBackgroundColor={
               isInputFieldsEmpty
-                ? colors.globalGray
-                : colors.globalBackgroundColor
+                ? colors.globalBackgroundColor
+                : colors.globalSecondaryColor
             }
-            buttonTextColor={colors.globalWhiteText}
+            buttonTextColor={colors.globalAlternateColor}
             buttonFunctionOnPress={loginButtonHandler}
           />
         </View>
@@ -162,46 +150,42 @@ const styles = StyleSheet.create({
   overallContainer: {
     width: '100%',
     height: height * 1,
-  },
-  logo: {
-    height: height * 0.35, // Takes screen height calculated by dimensions from React Native and makes the height 35% of that calculated screen height amount. Keeps dynamic.
-    alignSelf: 'center',
-    marginTop: '5%',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   loginContainer: {
     width: '85%',
-    height: height * 0.2,
-    borderRadius: 15,
-    borderColor: '#1E3A8A',
+    height: height * 0.3,
+    backgroundColor: colors.globalAlternateColor,
+    borderColor: colors.globalAlternateColor,
     borderWidth: 2,
+    borderRadius: 15,
     justifyContent: 'center',
-    alignSelf: 'center',
-  },
-  slogan: {
-    textAlign: 'center',
-    fontStyle: 'italic',
-    fontWeight: 800,
-    fontSize: 15,
   },
   singleFieldContainer: {
-    marginHorizontal: '2%',
+    marginHorizontal: '5%',
     marginVertical: '5%',
-    borderWidth: 0,
-    borderColor: colors.globalGray,
+  },
+  labels: {
+    color: colors.globalSecondaryColor,
+    fontWeight: '500',
+    fontSize: 15,
   },
   textInput: {
-    borderColor: colors.globalGray,
-    borderWidth: 1,
+    borderColor: colors.globalSecondaryColor,
+    color: colors.globalSecondaryColor,
+    borderWidth: 2,
     borderRadius: 7,
     height: 40,
-    paddingLeft: '2%',
+    paddingHorizontal: '3%',
   },
   focusedState: {
+    backgroundColor: colors.globalSecondaryColor,
+    color: colors.globalAlternateColor,
     fontWeight: 600,
   },
   loginButton: {
     width: '50%',
-    alignSelf: 'center',
   },
   newUserButtonContainer: {
     marginTop: height * 0.015,
@@ -210,7 +194,6 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: colors.globalAlternateColor,
     fontWeight: 600,
-    alignSelf: 'center',
   },
 });
 
