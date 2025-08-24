@@ -9,5 +9,6 @@ const colors = {
   globalAlternateColor: 'navy',
   globalWhiteText: 'white',
   globalGray: '#A9A9A9',
+  globalBlack: 'black',
 };
 export default colors;

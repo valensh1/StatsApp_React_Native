@@ -56,11 +56,7 @@ const SportIcons: React.FC<SportIconsProps> = ({
     <View>
       <Pressable onPress={sportSelectionHandler} style={styles.container}>
         <Text style={styles.sportLabels}>{sport}</Text>
-        <IconComponent
-          name={iconName}
-          size={100}
-          color={colors.globalSecondaryColor}
-        />
+        <IconComponent name={iconName} size={100} color={colors.globalBlack} />
       </Pressable>
     </View>
   );

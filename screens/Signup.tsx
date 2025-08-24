@@ -16,6 +16,7 @@ import colors from '../styles/colors_app';
 import APIUtils from '../utils/APIUtilis';
 import AppConstants from '../constants/constants';
 import ReactNativeModal from '../components/ReactNativeModal';
+import Logo from '../components/Logo';
 
 const { height } = Dimensions.get('window');
 
@@ -99,6 +100,8 @@ const Signup: React.FC<Props> = ({ navigation }) => {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <View>
+        <Logo height={height * 0.125} marginTop={height * 0.025} />
+        <Text style={styles.title}>Create Account</Text>
         <View
           style={[
             styles.overallContainer,
@@ -106,12 +109,19 @@ const Signup: React.FC<Props> = ({ navigation }) => {
           ]}>
           <View style={styles.signInTextInputContainer}>
             <View>
-              <InputField
+              {/* <InputField
                 label={'Email Address'}
                 onChangeText={(text) =>
                   signUpCredentialHandler('emailAddress', text)
                 }
-              />
+              /> */}
+              <TextInput
+                style={styles.textInput}
+                placeholder="Email"
+                autoCapitalize="none"
+                onChangeText={(text) =>
+                  signUpCredentialHandler('emailAddress', 'text')
+                }></TextInput>
             </View>
             <View>
               <InputField
@@ -162,15 +172,32 @@ const styles = StyleSheet.create({
   overallContainer: {
     height: height * 0.9,
     width: '100%',
-    justifyContent: 'center',
     alignItems: 'center',
+    borderWidth: 4,
+    borderColor: 'purple',
+  },
+  title: {
+    textAlign: 'center',
+    marginTop: '5%',
+    fontWeight: 600,
+    fontSize: 35,
+    borderWidth: 3,
+    borderColor: 'green',
   },
   signInTextInputContainer: {
     height: height * 0.4,
     width: '85%',
-    backgroundColor: colors.globalAlternateColor,
     borderRadius: 15,
     justifyContent: 'space-evenly',
+    borderWidth: 2,
+    borderColor: 'red',
+  },
+  textInput: {
+    borderColor: colors.globalGray,
+    borderWidth: 1,
+    borderRadius: 7,
+    height: 40,
+    paddingLeft: '2%',
   },
   button: {
     width: '60%',
@@ -181,8 +208,6 @@ const styles = StyleSheet.create({
     width: '100%',
     textAlign: 'center',
   },
-  modalMessageStyling: {
-    //   opacity: 0.1,
-  },
+  modalMessageStyling: {},
 });
 export default Signup;

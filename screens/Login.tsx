@@ -13,13 +13,13 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   Alert,
-  Image,
 } from 'react-native';
 import CustomButton from '../components/CustomButton';
 import colors from '../styles/colors_app';
 import APIUtils from '../utils/APIUtilis';
 import AppConstants from '../constants/constants';
 import { useUserContext } from '../store/context/userContext';
+import Logo from '../components/Logo';
 
 interface Credentials {
   emailAddress: string;
@@ -101,11 +101,7 @@ const Login: React.FC<Props> = ({ navigation }) => {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <View style={styles.overallContainer}>
-        <Image
-          source={require('../images/YSG_Logo.png')}
-          style={styles.logo}
-          resizeMode="contain"
-        />
+        <Logo height={height * 0.35} marginTop={height * 0.025} />
         <View style={styles.loginContainer}>
           <Text style={styles.slogan}>
             Track your stats. Build your future.
@@ -162,6 +158,7 @@ const styles = StyleSheet.create({
   overallContainer: {
     width: '100%',
     height: height * 1,
+    // backgroundColor: '',
   },
   logo: {
     height: height * 0.35, // Takes screen height calculated by dimensions from React Native and makes the height 35% of that calculated screen height amount. Keeps dynamic.
@@ -176,6 +173,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     justifyContent: 'center',
     alignSelf: 'center',
+    marginTop: '5%',
   },
   slogan: {
     textAlign: 'center',

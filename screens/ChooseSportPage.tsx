@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, Dimensions, StyleSheet } from 'react-native';
 import { useState, useEffect } from 'react';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types/navigation'; // import the type
@@ -8,6 +8,8 @@ import SportIcons from '../components/SportIcons';
 
 interface Props
   extends NativeStackScreenProps<RootStackParamList, 'ChooseSport'> {}
+
+const { height } = Dimensions.get('window');
 
 export const ChooseSportPage = ({ navigation }: Props) => {
   const { user, setUser } = useUserContext();
@@ -54,7 +56,8 @@ export default ChooseSportPage;
 
 const styles = StyleSheet.create({
   pageContainer: {
-    backgroundColor: colors.globalBackgroundColor,
+    // backgroundColor: colors.globalBackgroundColor,
+    marginTop: height * 0.05,
     height: '100%',
     width: '100%',
   },
