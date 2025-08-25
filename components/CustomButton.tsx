@@ -15,7 +15,7 @@ interface ButtonComponent {
 
 const { height } = Dimensions.get('window');
 
-const CustomButton = ({
+const CustomButton: React.FC<ButtonComponent> = ({
   text,
   navigationPath,
   navigation,

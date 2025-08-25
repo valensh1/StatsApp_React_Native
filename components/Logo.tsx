@@ -1,20 +1,20 @@
 import React from 'react';
 import { Image, StyleSheet } from 'react-native';
 
-interface logoSize {
+interface LogoSize {
   height: number;
   width?: number;
   marginTop?: number;
 }
 
-const Logo = (size: logoSize) => {
+const Logo: React.FC<LogoSize> = ({ height, width, marginTop }) => {
   return (
     <Image
       source={require('../images/YSG_Logo.png')}
       style={{
-        height: size.height,
-        width: size.width,
-        marginTop: size.marginTop,
+        height: height,
+        width: width,
+        marginTop: marginTop,
       }}
       resizeMode="contain"
     />

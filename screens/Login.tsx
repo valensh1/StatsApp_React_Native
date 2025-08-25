@@ -167,7 +167,7 @@ const styles = StyleSheet.create({
   },
   loginContainer: {
     width: '85%',
-    height: height * 0.2,
+    height: height * 0.23,
     borderRadius: 15,
     borderColor: '#1E3A8A',
     borderWidth: 2,

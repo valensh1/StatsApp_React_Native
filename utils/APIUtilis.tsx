@@ -9,6 +9,7 @@ const { FIREBASE_WEB_API_KEY, FIREBASE_URL } =
 class APIUtils {
   public static async createUser(
     mode: string,
+    fullName: string,
     email: string,
     password: string
   ) {
@@ -16,6 +17,7 @@ class APIUtils {
       const response = await axios.post(
         `https://identitytoolkit.googleapis.com/v1/accounts:${mode}?key=${FIREBASE_WEB_API_KEY}`,
         {
+          fullName: fullName,
           email: email,
           password: password,
           returnSecureToken: true,

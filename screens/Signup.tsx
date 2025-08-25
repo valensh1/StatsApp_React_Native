@@ -10,6 +10,7 @@ import {
 import { useState, useCallback, useEffect } from 'react';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types/navigation'; // import the type
+import { Platform } from 'react-native';
 import InputField from '../components/InputField';
 import CustomButton from '../components/CustomButton';
 import colors from '../styles/colors_app';
@@ -17,10 +18,13 @@ import APIUtils from '../utils/APIUtilis';
 import AppConstants from '../constants/constants';
 import ReactNativeModal from '../components/ReactNativeModal';
 import Logo from '../components/Logo';
+import Dropdown from '../components/Dropdown';
+import constants from '../constants/constants';
 
 const { height } = Dimensions.get('window');
 
 interface SignupCredentials {
+  fullName: string;
   emailAddress: string;
   password: string;
   confirmPassword: string;
@@ -29,6 +33,7 @@ interface SignupCredentials {
 interface Props extends NativeStackScreenProps<RootStackParamList, 'Signup'> {}
 
 const defaultSignupCredentials = {
+  fullName: '',
   emailAddress: '',
   password: '',
   confirmPassword: '',
@@ -83,6 +88,7 @@ const Signup: React.FC<Props> = ({ navigation }) => {
       setIsPasswordCriteriaMet(true);
       const user = await APIUtils.createUser(
         'signUp',
+        credentials.fullName,
         credentials.emailAddress,
         credentials.password
       );
@@ -91,7 +97,7 @@ const Signup: React.FC<Props> = ({ navigation }) => {
       setTimeout(() => {
         console.log('Timer started');
         setShowModal(false);
-        navigation.navigate('Home');
+        navigation.navigate('Login');
       }, 3000);
     }
   };
@@ -109,37 +115,41 @@ const Signup: React.FC<Props> = ({ navigation }) => {
           ]}>
           <View style={styles.signInTextInputContainer}>
             <View>
-              {/* <InputField
-                label={'Email Address'}
+              <TextInput
+                style={styles.textInput}
+                placeholder="Full Name"
+                autoCapitalize="none"
                 onChangeText={(text) =>
-                  signUpCredentialHandler('emailAddress', text)
-                }
-              /> */}
+                  signUpCredentialHandler('fullName', text)
+                }></TextInput>
               <TextInput
                 style={styles.textInput}
                 placeholder="Email"
                 autoCapitalize="none"
                 onChangeText={(text) =>
-                  signUpCredentialHandler('emailAddress', 'text')
+                  signUpCredentialHandler('emailAddress', text)
                 }></TextInput>
             </View>
             <View>
-              <InputField
-                label={'Password'}
+              <TextInput
+                style={styles.textInput}
+                placeholder="Password"
+                autoCapitalize="none"
+                secureTextEntry={true}
                 onChangeText={(text) =>
                   signUpCredentialHandler('password', text)
-                }
-                secureTextEntry={true}
-              />
+                }></TextInput>
             </View>
             <View>
-              <InputField
-                label={'Confirm Password'}
+              <TextInput
+                style={styles.textInput}
+                placeholder="Confirm Password"
+                autoCapitalize="none"
+                secureTextEntry={true}
                 onChangeText={(text) =>
                   signUpCredentialHandler('confirmPassword', text)
-                }
-                secureTextEntry={true}
-              />
+                }></TextInput>
+              <Dropdown data={constants.signupRoles} />
             </View>
             <View>
               <Text style={styles.errorMessageContainer}>
@@ -152,9 +162,10 @@ const Signup: React.FC<Props> = ({ navigation }) => {
               text={'Sign Up'}
               buttonBackgroundColor={
                 isInputFieldsEmpty
-                  ? colors.globalBackgroundColor
-                  : colors.globalSecondaryColor
+                  ? colors.globalGray
+                  : colors.globalBackgroundColor
               }
+              buttonTextColor={colors.globalWhiteText}
               buttonFunctionOnPress={buttonFunctionOnPress}
             />
           </View>
@@ -170,27 +181,20 @@ const Signup: React.FC<Props> = ({ navigation }) => {
 };
 const styles = StyleSheet.create({
   overallContainer: {
-    height: height * 0.9,
     width: '100%',
     alignItems: 'center',
-    borderWidth: 4,
-    borderColor: 'purple',
   },
   title: {
     textAlign: 'center',
     marginTop: '5%',
     fontWeight: 600,
     fontSize: 35,
-    borderWidth: 3,
-    borderColor: 'green',
   },
   signInTextInputContainer: {
-    height: height * 0.4,
+    height: height * 0.5,
     width: '85%',
     borderRadius: 15,
-    justifyContent: 'space-evenly',
-    borderWidth: 2,
-    borderColor: 'red',
+    justifyContent: 'flex-start',
   },
   textInput: {
     borderColor: colors.globalGray,
@@ -198,15 +202,21 @@ const styles = StyleSheet.create({
     borderRadius: 7,
     height: 40,
     paddingLeft: '2%',
+    marginTop: '5%',
   },
   button: {
     width: '60%',
+    marginTop: Platform.select({
+      ios: '-32%',
+      android: '-18%',
+    }),
   },
   errorMessageContainer: {
     color: 'red',
     fontWeight: 600,
     width: '100%',
     textAlign: 'center',
+    marginTop: '5%',
   },
   modalMessageStyling: {},
 });
