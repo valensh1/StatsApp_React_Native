@@ -3,6 +3,7 @@ import {
   TextInput,
   Text,
   TouchableWithoutFeedback,
+  TouchableOpacity,
   Keyboard,
   StyleSheet,
   Dimensions,
@@ -11,7 +12,6 @@ import { useState, useCallback, useEffect } from 'react';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types/navigation'; // import the type
 import { Platform } from 'react-native';
-import InputField from '../components/InputField';
 import CustomButton from '../components/CustomButton';
 import colors from '../styles/colors_app';
 import APIUtils from '../utils/APIUtilis';
@@ -20,23 +20,31 @@ import ReactNativeModal from '../components/ReactNativeModal';
 import Logo from '../components/Logo';
 import Dropdown from '../components/Dropdown';
 import constants from '../constants/constants';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const { height } = Dimensions.get('window');
+const inputBoxHeight = 40;
+const halfOfInputBoxHeight = inputBoxHeight / 2;
+const passwordIconHeight = 24;
 
 interface SignupCredentials {
-  fullName: string;
+  firstName: string;
+  lastName: string;
   emailAddress: string;
   password: string;
   confirmPassword: string;
+  role: string;
 }
 
 interface Props extends NativeStackScreenProps<RootStackParamList, 'Signup'> {}
 
 const defaultSignupCredentials = {
-  fullName: '',
+  firstName: '',
+  lastName: '',
   emailAddress: '',
   password: '',
   confirmPassword: '',
+  role: '',
 };
 
 const Signup: React.FC<Props> = ({ navigation }) => {
@@ -49,6 +57,13 @@ const Signup: React.FC<Props> = ({ navigation }) => {
     useState<boolean>(true);
   const [errorMessage, setErrorMessage] = useState<string>();
   const [showModal, setShowModal] = useState<boolean>(false);
+  const [showPassword, setShowPassword] = useState<{
+    password: boolean;
+    confirmPassword: boolean;
+  }>({
+    password: false,
+    confirmPassword: false,
+  });
 
   //? HOOKS
   useEffect(() => {
@@ -73,6 +88,13 @@ const Signup: React.FC<Props> = ({ navigation }) => {
     [credentials] // Empty array will not re-create function on every render
   );
 
+  const showPasswordHandler = (field: 'password' | 'confirmPassword') => {
+    setShowPassword((prev) => ({
+      ...prev,
+      [field]: !prev[field],
+    }));
+  };
+
   const buttonFunctionOnPress = async () => {
     if (credentials.password !== credentials.confirmPassword) {
       setIsPasswordCriteriaMet(false);
@@ -88,11 +110,13 @@ const Signup: React.FC<Props> = ({ navigation }) => {
       setIsPasswordCriteriaMet(true);
       const user = await APIUtils.createUser(
         'signUp',
-        credentials.fullName,
+        credentials.firstName,
+        credentials.lastName,
         credentials.emailAddress,
-        credentials.password
+        credentials.password,
+        credentials.role
       );
-      console.log(user);
+      console.log('This is the user from Signup being logged', user);
       setShowModal(true);
       setTimeout(() => {
         console.log('Timer started');
@@ -117,10 +141,17 @@ const Signup: React.FC<Props> = ({ navigation }) => {
             <View>
               <TextInput
                 style={styles.textInput}
-                placeholder="Full Name"
+                placeholder="First Name"
                 autoCapitalize="none"
                 onChangeText={(text) =>
-                  signUpCredentialHandler('fullName', text)
+                  signUpCredentialHandler('firstName', text)
+                }></TextInput>
+              <TextInput
+                style={styles.textInput}
+                placeholder="Last Name"
+                autoCapitalize="none"
+                onChangeText={(text) =>
+                  signUpCredentialHandler('lastName', text)
                 }></TextInput>
               <TextInput
                 style={styles.textInput}
@@ -130,27 +161,50 @@ const Signup: React.FC<Props> = ({ navigation }) => {
                   signUpCredentialHandler('emailAddress', text)
                 }></TextInput>
             </View>
-            <View>
+            <View style={styles.passwordContainer}>
               <TextInput
-                style={styles.textInput}
+                style={[styles.textInput, styles.passwordInput]}
                 placeholder="Password"
                 autoCapitalize="none"
-                secureTextEntry={true}
+                secureTextEntry={!showPassword.password}
                 onChangeText={(text) =>
                   signUpCredentialHandler('password', text)
                 }></TextInput>
+              <TouchableOpacity
+                onPress={() => showPasswordHandler('password')}
+                style={styles.passwordIconContainer}>
+                <Icon
+                  name={showPassword.password ? 'eye-off' : 'eye'}
+                  size={passwordIconHeight}
+                  color="black"
+                />
+              </TouchableOpacity>
             </View>
-            <View>
+            <View style={styles.passwordContainer}>
               <TextInput
-                style={styles.textInput}
+                style={[styles.textInput, styles.passwordInput]}
                 placeholder="Confirm Password"
                 autoCapitalize="none"
-                secureTextEntry={true}
+                secureTextEntry={!showPassword.confirmPassword}
                 onChangeText={(text) =>
                   signUpCredentialHandler('confirmPassword', text)
                 }></TextInput>
-              <Dropdown data={constants.signupRoles} />
+              <TouchableOpacity
+                onPress={() => showPasswordHandler('confirmPassword')}
+                style={styles.passwordIconContainer}>
+                <Icon
+                  name={showPassword.confirmPassword ? 'eye-off' : 'eye'}
+                  size={passwordIconHeight}
+                  color="black"
+                />
+              </TouchableOpacity>
             </View>
+            <Dropdown
+              data={constants.signupRoles}
+              onSelect={(selectedRole: string) =>
+                signUpCredentialHandler('role', selectedRole)
+              }
+            />
             <View>
               <Text style={styles.errorMessageContainer}>
                 {!isPasswordCriteriaMet && errorMessage}
@@ -181,8 +235,8 @@ const Signup: React.FC<Props> = ({ navigation }) => {
 };
 const styles = StyleSheet.create({
   overallContainer: {
+    position: 'relative',
     width: '100%',
-    alignItems: 'center',
   },
   title: {
     textAlign: 'center',
@@ -191,21 +245,32 @@ const styles = StyleSheet.create({
     fontSize: 35,
   },
   signInTextInputContainer: {
-    height: height * 0.5,
+    height: height * 0.57,
     width: '85%',
     borderRadius: 15,
     justifyContent: 'flex-start',
+    marginLeft: '7.5%',
   },
   textInput: {
     borderColor: colors.globalGray,
     borderWidth: 1,
     borderRadius: 7,
-    height: 40,
+    height: inputBoxHeight,
     paddingLeft: '2%',
     marginTop: '5%',
   },
+  passwordContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    verticalAlign: 'middle',
+    width: '100%',
+  },
+  passwordInput: {
+    flex: 1,
+  },
   button: {
     width: '60%',
+    alignSelf: 'center',
     marginTop: Platform.select({
       ios: '-32%',
       android: '-18%',
@@ -219,5 +284,10 @@ const styles = StyleSheet.create({
     marginTop: '5%',
   },
   modalMessageStyling: {},
+  passwordIconContainer: {
+    position: 'absolute',
+    right: '2.5%', // distance from right edge
+    top: 24, // vertical center
+  },
 });
 export default Signup;

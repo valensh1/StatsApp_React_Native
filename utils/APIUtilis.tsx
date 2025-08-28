@@ -9,22 +9,38 @@ const { FIREBASE_WEB_API_KEY, FIREBASE_URL } =
 class APIUtils {
   public static async createUser(
     mode: string,
-    fullName: string,
+    firstName: string,
+    lastName: string,
     email: string,
-    password: string
+    password: string,
+    role: string
   ) {
     try {
       const response = await axios.post(
         `https://identitytoolkit.googleapis.com/v1/accounts:${mode}?key=${FIREBASE_WEB_API_KEY}`,
         {
-          fullName: fullName,
           email: email,
           password: password,
           returnSecureToken: true,
         }
       );
-      return response.data;
-    } catch (error) {
+      const { localId, idToken } = response.data;
+      console.log(`This is the create user response ${response.data}`);
+
+      // Creating an entry in the Firebase database for users
+      const response2 = await axios.post(
+        `${FIREBASE_URL}/users.json?auth=${idToken}`, // Uses user's token,
+        {
+          firstName: firstName,
+          lastName: lastName,
+          email: email,
+          role: role,
+        }
+      );
+      console.log(`This is the response 2 ${response2.data}`);
+      return { auth: response.data, userCreation: response2.data };
+    } catch (error: any) {
+      console.error(`Signup error`, error.response.data);
       Alert.alert(
         'Sign Up Failed',
         'There was an error creating your user account. Please try again!'

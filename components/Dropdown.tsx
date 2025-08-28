@@ -11,11 +11,18 @@ interface DropdownData {
 
 interface DropdownProps {
   data: DropdownData[];
+  onSelect: (item: string) => void;
 }
 
-const DropdownComponent: React.FC<DropdownProps> = ({ data }) => {
-  const [value, setValue] = useState(null);
+const DropdownComponent: React.FC<DropdownProps> = ({ data, onSelect }) => {
+  const [value, setValue] = useState<string | null>(null);
   const [isFocus, setIsFocus] = useState(false);
+
+  const dropdownSelectionHandler = (role: string) => {
+    setValue(role);
+    setIsFocus(false);
+    onSelect(role);
+  };
 
   return (
     <View style={styles.container}>
@@ -33,8 +40,7 @@ const DropdownComponent: React.FC<DropdownProps> = ({ data }) => {
         onFocus={() => setIsFocus(true)}
         onBlur={() => setIsFocus(false)}
         onChange={(item) => {
-          setValue(item.value);
-          setIsFocus(false);
+          dropdownSelectionHandler(item.value);
         }}
         renderLeftIcon={() => (
           <AntDesign

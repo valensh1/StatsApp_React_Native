@@ -7,10 +7,11 @@ const AppConstants: AppConstants = Object.freeze({
   minimumPasswordCharacters: 7,
   signupRoles: [
     { label: 'Coach', value: 'Coach' },
-    { label: 'Scout', value: 'Scout' },
-    { label: 'Referee', value: 'Referee' },
     { label: 'Parent', value: 'Parent' },
     { label: 'Player', value: 'Player' },
+    { label: 'Referee', value: 'Referee' },
+    { label: 'Scout', value: 'Scout' },
+    { label: 'Team Manager', value: 'Team Manager' },
   ],
 });
 export default AppConstants;
