@@ -1,0 +1,6 @@
+module Pods_StatsAppReactNative {
+  umbrella header "Pods-StatsAppReactNative-umbrella.h"
+
+  export *
+  module * { export * }
+}

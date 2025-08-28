@@ -1,7 +1,8 @@
 import React from 'react';
 import { View, Text, StyleSheet, Pressable, ScrollView } from 'react-native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../types/navigation';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { useRouter } from 'expo-router';
 import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
@@ -16,17 +17,17 @@ interface SportIconsProps {
     | 'MaterialIcons'
     | 'FontAwesome5'
     | 'FontAwesome6';
+  navigation: NativeStackNavigationProp<RootStackParamList>;
 }
 
 const SportIcons: React.FC<SportIconsProps> = ({
   sport,
   iconName,
   iconLibrary,
+  navigation,
 }) => {
-  const router = useRouter();
-
   const sportSelectionHandler = () => {
-    router.push(`/sportPositions/${sport}`);
+    navigation.navigate('ChoosePosition', { sport });
   };
 
   let IconComponent;
@@ -55,11 +56,7 @@ const SportIcons: React.FC<SportIconsProps> = ({
     <View>
       <Pressable onPress={sportSelectionHandler} style={styles.container}>
         <Text style={styles.sportLabels}>{sport}</Text>
-        <IconComponent
-          name={iconName}
-          size={100}
-          color={colors.globalSecondaryColor}
-        />
+        <IconComponent name={iconName} size={100} color={colors.globalBlack} />
       </Pressable>
     </View>
   );

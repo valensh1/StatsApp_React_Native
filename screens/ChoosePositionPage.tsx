@@ -14,7 +14,7 @@ const ChoosePositionPage: React.FC<Props> = ({ navigation, route }) => {
 
   const choosePositionHandler = (position: string) => {
     console.log(`This is the position that was clicked ${position}`);
-    navigation.navigate('PositionDetail', { sport, position });
+    navigation.navigate('StatCounter', { sport, position });
   };
 
   return (

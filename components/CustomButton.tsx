@@ -15,7 +15,7 @@ interface ButtonComponent {
 
 const { height } = Dimensions.get('window');
 
-const CustomButton = ({
+const CustomButton: React.FC<ButtonComponent> = ({
   text,
   navigationPath,
   navigation,
@@ -62,8 +62,6 @@ const styles = StyleSheet.create({
     height: height * 0.05,
     marginTop: height * 0.02,
     borderRadius: 7,
-    borderColor: colors.globalSecondaryColor,
-    borderWidth: 2,
     backgroundColor: colors.globalSecondaryColor,
   },
   buttonText: {
