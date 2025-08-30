@@ -30,6 +30,12 @@ const Home: React.FC<Props> = ({ navigation }) => {
           buttonFunctionOnPress={() => createTeamHandler('sport')}
         />
         <CustomButton
+          text="Update Team"
+          buttonBackgroundColor={Colors.globalBackgroundColor}
+          buttonTextColor="white"
+          buttonAdditionalStyleProps={{ width: '85%', alignSelf: 'center' }}
+        />
+        <CustomButton
           text="Create Game Schedule"
           buttonBackgroundColor={Colors.globalBackgroundColor}
           buttonTextColor="white"

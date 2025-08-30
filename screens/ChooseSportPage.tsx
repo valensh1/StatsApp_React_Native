@@ -29,24 +29,12 @@ export const ChooseSportPage = ({ navigation }: Props) => {
       <Logo height={height * 0.1} marginTop={1} />
       <Text style={styles.title}>Choose Your Sport</Text>
       <View style={styles.sportCategories}>
-        {/* <SportIcons
-        sport="Baseball"
-        iconName="baseball-bat"
-        iconLibrary="MaterialCommunityIcons"
-        navigation={navigation}
-      /> */}
         <SportIcons
           sport="Basketball"
           iconName="basketball-outline"
           iconLibrary="Iconicons"
           navigation={navigation}
         />
-        {/* <SportIcons
-        sport="Football"
-        iconName="american-football-outline"
-        iconLibrary="Iconicons"
-        navigation={navigation}
-      /> */}
         <SportIcons
           sport="Hockey"
           iconName="sports-hockey"
