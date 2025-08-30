@@ -86,7 +86,7 @@ const Login: React.FC<Props> = ({ navigation }) => {
             email: loggedInUser[1].email,
             displayName: loggedInUser[1].displayName,
           });
-          navigation.navigate('ChooseSport');
+          navigation.navigate('Home');
         }
       } catch (error) {}
     } else {
@@ -101,7 +101,7 @@ const Login: React.FC<Props> = ({ navigation }) => {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <View style={styles.overallContainer}>
-        <Logo height={height * 0.35} marginTop={height * 0.025} />
+        <Logo height={height * 0.3} marginTop={height * 0.025} />
         <View style={styles.loginContainer}>
           <Text style={styles.slogan}>
             Track your stats. Build your future.

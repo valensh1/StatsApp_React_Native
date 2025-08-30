@@ -5,7 +5,6 @@ import { RootStackParamList } from '../types/navigation'; // import the type
 import { useUserContext } from '../store/context/userContext';
 import colors from '../styles/colors_app';
 import SportIcons from '../components/SportIcons';
-import Logo from '../components/Logo';
 
 interface Props
   extends NativeStackScreenProps<RootStackParamList, 'ChooseSport'> {}
@@ -26,34 +25,30 @@ export const ChooseSportPage = ({ navigation }: Props) => {
 
   return (
     <View style={styles.pageContainer}>
-      <Logo height={height * 0.1} marginTop={1} />
-      <Text style={styles.title}>Choose Your Sport</Text>
-      <View style={styles.sportCategories}>
-        {/* <SportIcons
+      <SportIcons
         sport="Baseball"
         iconName="baseball-bat"
         iconLibrary="MaterialCommunityIcons"
         navigation={navigation}
-      /> */}
-        <SportIcons
-          sport="Basketball"
-          iconName="basketball-outline"
-          iconLibrary="Iconicons"
-          navigation={navigation}
-        />
-        {/* <SportIcons
+      />
+      <SportIcons
+        sport="Basketball"
+        iconName="basketball-outline"
+        iconLibrary="Iconicons"
+        navigation={navigation}
+      />
+      <SportIcons
         sport="Football"
         iconName="american-football-outline"
         iconLibrary="Iconicons"
         navigation={navigation}
-      /> */}
-        <SportIcons
-          sport="Hockey"
-          iconName="sports-hockey"
-          iconLibrary="MaterialIcons"
-          navigation={navigation}
-        />
-      </View>
+      />
+      <SportIcons
+        sport="Hockey"
+        iconName="sports-hockey"
+        iconLibrary="MaterialIcons"
+        navigation={navigation}
+      />
     </View>
   );
 };
@@ -61,18 +56,9 @@ export default ChooseSportPage;
 
 const styles = StyleSheet.create({
   pageContainer: {
-    marginTop: height * 0.025,
+    // backgroundColor: colors.globalBackgroundColor,
+    marginTop: height * 0.05,
     height: '100%',
     width: '100%',
-  },
-  title: {
-    textAlign: 'center',
-    marginTop: '7.5%',
-    fontWeight: 600,
-    fontSize: 28,
-  },
-  sportCategories: {
-    marginLeft: '2.5%',
-    marginTop: '2.5%',
   },
 });

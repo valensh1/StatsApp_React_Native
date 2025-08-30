@@ -1,6 +1,7 @@
 import axios from 'axios';
 import Constants from 'expo-constants';
 import { Alert } from 'react-native';
+import { G } from 'react-native-svg';
 
 // Define your Firebase Web API Key here or import it from a config file
 const { FIREBASE_WEB_API_KEY, FIREBASE_URL } =
@@ -58,6 +59,7 @@ class APIUtils {
           returnSecureToken: true,
         }
       );
+      console.log(`This is the response from the database`, response);
       return [response.status, response.data];
     } catch (error) {
       Alert.alert(
