@@ -58,6 +58,7 @@ class APIUtils {
           returnSecureToken: true,
         }
       );
+      console.log(`This is the response from the database`, response);
       return [response.status, response.data];
     } catch (error) {
       Alert.alert(

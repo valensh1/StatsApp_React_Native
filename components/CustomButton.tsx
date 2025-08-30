@@ -5,7 +5,6 @@ import colors from '../styles/colors_app';
 
 interface ButtonComponent {
   text: string;
-  navigationPath?: string;
   navigation?: any; //! pass the navigation prop from the parent screen!!!!
   buttonBackgroundColor?: string;
   buttonTextColor?: string;
@@ -17,7 +16,6 @@ const { height } = Dimensions.get('window');
 
 const CustomButton: React.FC<ButtonComponent> = ({
   text,
-  navigationPath,
   navigation,
   buttonBackgroundColor,
   buttonTextColor,
@@ -30,9 +28,9 @@ const CustomButton: React.FC<ButtonComponent> = ({
   const buttonPressHandler = () => {
     if (buttonFunctionOnPress) {
       buttonFunctionOnPress();
-      console.log(`This is the navigation path ${navigationPath}`);
-      if (navigationPath && navigation) {
-        navigation.navigate(navigationPath);
+      console.log(`This is the navigation path ${navigation}`);
+      if (navigation) {
+        // navigation.navigate(navigation);
       } else {
         console.log('No navigation path or navigation object provided');
       }

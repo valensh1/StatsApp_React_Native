@@ -142,6 +142,7 @@ const Signup: React.FC<Props> = ({ navigation }) => {
               <TextInput
                 style={styles.textInput}
                 placeholder="First Name"
+                placeholderTextColor={styles.placeholderText.color}
                 autoCapitalize="none"
                 onChangeText={(text) =>
                   signUpCredentialHandler('firstName', text)
@@ -149,6 +150,7 @@ const Signup: React.FC<Props> = ({ navigation }) => {
               <TextInput
                 style={styles.textInput}
                 placeholder="Last Name"
+                placeholderTextColor={styles.placeholderText.color}
                 autoCapitalize="none"
                 onChangeText={(text) =>
                   signUpCredentialHandler('lastName', text)
@@ -156,6 +158,7 @@ const Signup: React.FC<Props> = ({ navigation }) => {
               <TextInput
                 style={styles.textInput}
                 placeholder="Email"
+                placeholderTextColor={styles.placeholderText.color}
                 autoCapitalize="none"
                 onChangeText={(text) =>
                   signUpCredentialHandler('emailAddress', text)
@@ -165,6 +168,7 @@ const Signup: React.FC<Props> = ({ navigation }) => {
               <TextInput
                 style={[styles.textInput, styles.passwordInput]}
                 placeholder="Password"
+                placeholderTextColor={styles.placeholderText.color}
                 autoCapitalize="none"
                 secureTextEntry={!showPassword.password}
                 onChangeText={(text) =>
@@ -184,6 +188,7 @@ const Signup: React.FC<Props> = ({ navigation }) => {
               <TextInput
                 style={[styles.textInput, styles.passwordInput]}
                 placeholder="Confirm Password"
+                placeholderTextColor={styles.placeholderText.color}
                 autoCapitalize="none"
                 secureTextEntry={!showPassword.confirmPassword}
                 onChangeText={(text) =>
@@ -258,6 +263,9 @@ const styles = StyleSheet.create({
     height: inputBoxHeight,
     paddingLeft: '2%',
     marginTop: '5%',
+  },
+  placeholderText: {
+    color: '#3C3C4399',
   },
   passwordContainer: {
     flexDirection: 'row',

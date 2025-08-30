@@ -55,8 +55,12 @@ const SportIcons: React.FC<SportIconsProps> = ({
   return (
     <View>
       <Pressable onPress={sportSelectionHandler} style={styles.container}>
+        <IconComponent
+          name={iconName}
+          size={60}
+          color={colors.globalWhiteText}
+        />
         <Text style={styles.sportLabels}>{sport}</Text>
-        <IconComponent name={iconName} size={100} color={colors.globalBlack} />
       </Pressable>
     </View>
   );
@@ -64,14 +68,21 @@ const SportIcons: React.FC<SportIconsProps> = ({
 
 const styles = StyleSheet.create({
   container: {
+    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: '10%',
+    backgroundColor: colors.globalBackgroundColor,
+    width: '65%',
+    borderRadius: '5%',
+    marginTop: '2.5%',
+    alignSelf: 'center',
+    paddingLeft: '5%',
+    height: 75,
   },
   sportLabels: {
-    color: colors.globalAlternateColor,
+    color: colors.globalWhiteText,
     fontWeight: '600',
     fontSize: 18,
+    marginLeft: '10%',
   },
 });
 export default SportIcons;

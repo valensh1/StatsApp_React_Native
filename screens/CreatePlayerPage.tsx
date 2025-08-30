@@ -87,7 +87,6 @@ export const CreatePlayerPage = () => {
       <View style={styles.button}>
         <CustomButton
           text="Save"
-          navigationPath="(tabs)/stats"
           buttonBackgroundColor={colors.globalSecondaryColor}
           buttonTextColor={colors.globalAlternateColor}
           buttonAdditionalStyleProps={{
