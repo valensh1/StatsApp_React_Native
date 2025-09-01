@@ -8,6 +8,8 @@ import ChooseSportPage from './screens/ChooseSportPage';
 import ChoosePositionPage from './screens/ChoosePositionPage';
 import StatCounterPage from './screens/StatCounterPage';
 import HistoricalStats from './screens/HistoricalStats';
+import TeamInfoPage from './screens/TeamInfoPage';
+import Logo from './components/Logo';
 import {
   NativeStackScreenProps,
   createNativeStackNavigator,
@@ -21,7 +23,7 @@ const App: React.FC = () => {
     <>
       <StatusBar style="auto" />
       <NavigationContainer>
-        <Stack.Navigator>
+        <Stack.Navigator screenOptions={{ headerTitleAlign: 'center' }}>
           {/* Displays Login page upon opening the app since its the first page in the stack */}
           <Stack.Screen name="Login" component={Login} />
           <Stack.Screen name="Signup" component={Signup} />
@@ -29,6 +31,11 @@ const App: React.FC = () => {
           <Stack.Screen
             name="ChooseSport"
             component={ChooseSportPage}
+            options={{ title: '' }}
+          />
+          <Stack.Screen
+            name="TeamInfo"
+            component={TeamInfoPage}
             options={{ title: '' }}
           />
           <Stack.Screen name="ChoosePosition" component={ChoosePositionPage} />
@@ -42,10 +49,5 @@ const App: React.FC = () => {
 export default App;
 
 const styles = StyleSheet.create({
-  container: {
-    // flex: 1,
-    // backgroundColor: '#fff',
-    // alignItems: 'center',
-    // justifyContent: 'center',
-  },
+  container: {},
 });

@@ -12,7 +12,7 @@ interface Props
 
 const { height } = Dimensions.get('window');
 
-export const ChooseSportPage = ({ navigation }: Props) => {
+const ChooseSportPage = ({ navigation }: Props) => {
   const { user, setUser } = useUserContext();
   const [isUserAccountCreated, setIsUserAccountCreated] = useState(false);
   console.log(`This is the user from the stats page ${JSON.stringify(user)}`);

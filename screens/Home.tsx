@@ -5,11 +5,17 @@ import CustomButton from '../components/CustomButton';
 import Colors from '../styles/colors_app';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types/navigation'; // import the type
+import { auth } from '../firebaseConfig';
 
 interface Props extends NativeStackScreenProps<RootStackParamList, 'Home'> {}
 const { height } = Dimensions.get('window');
 
 const Home: React.FC<Props> = ({ navigation }) => {
+  //? Variables
+  const userName =
+    auth.currentUser?.displayName === null ? '' : auth.currentUser?.displayName;
+
+  //? Functions
   const createTeamHandler = (action: string) => {
     if (action === 'sport') {
       console.log('Sport was selected');
@@ -19,7 +25,17 @@ const Home: React.FC<Props> = ({ navigation }) => {
 
   return (
     <View>
-      <Logo height={height * 0.2} marginTop={height * 0.025} />
+      <Logo height={height * 0.15} marginTop={height * 0.02} />
+      <View style={styles.textContainer}>
+        <Text style={[styles.text, styles.welcomeText]}>
+          {userName ? `Welcome ${userName}!` : 'Welcome!'}
+        </Text>
+        <Text
+          style={[
+            styles.text,
+            styles.questionText,
+          ]}>{`What would you like to do?`}</Text>
+      </View>
       <View style={styles.overallContainer}>
         <CustomButton
           text="Create Team"
@@ -55,5 +71,18 @@ export default Home;
 const styles = StyleSheet.create({
   overallContainer: {
     marginTop: '2.5%',
+  },
+  textContainer: {
+    alignItems: 'center',
+  },
+  text: {
+    marginTop: '5%',
+    color: Colors.globalBackgroundColor,
+  },
+  welcomeText: {
+    fontSize: 25,
+  },
+  questionText: {
+    fontSize: 18,
   },
 });

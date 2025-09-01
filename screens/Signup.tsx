@@ -14,13 +14,17 @@ import { RootStackParamList } from '../types/navigation'; // import the type
 import { Platform } from 'react-native';
 import CustomButton from '../components/CustomButton';
 import colors from '../styles/colors_app';
-import APIUtils from '../utils/APIUtilis';
+// import APIUtils from '../utils/APIUtilis';
 import AppConstants from '../constants/constants';
 import ReactNativeModal from '../components/ReactNativeModal';
 import Logo from '../components/Logo';
 import Dropdown from '../components/Dropdown';
 import constants from '../constants/constants';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { auth } from '../firebaseConfig';
+import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { db } from '../firebaseConfig';
+import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
 
 const { height } = Dimensions.get('window');
 const inputBoxHeight = 40;
@@ -77,6 +81,8 @@ const Signup: React.FC<Props> = ({ navigation }) => {
     );
   }, [credentials]);
 
+  useEffect(() => {}, [showModal]);
+
   //? FUNCTIONS
   const signUpCredentialHandler = useCallback(
     (field: keyof SignupCredentials, text: string): void => {
@@ -96,33 +102,72 @@ const Signup: React.FC<Props> = ({ navigation }) => {
   };
 
   const buttonFunctionOnPress = async () => {
-    if (credentials.password !== credentials.confirmPassword) {
+    // destructure credentials state
+    const {
+      firstName,
+      lastName,
+      emailAddress,
+      password,
+      confirmPassword,
+      role,
+    } = credentials;
+    if (password !== confirmPassword) {
       setIsPasswordCriteriaMet(false);
       setErrorMessage('Passwords do NOT match...please try again!');
-    } else if (
-      credentials.password.length < AppConstants.minimumPasswordCharacters
-    ) {
+      return;
+    }
+    if (password.length < AppConstants.minimumPasswordCharacters) {
       setIsPasswordCriteriaMet(false);
       setErrorMessage(
-        'Passwords need to have at least 7 characters...please try again!'
+        `Passwords need to have at least ${AppConstants.minimumPasswordCharacters} characters...please try again!`
       );
-    } else {
+      return;
+    }
+    try {
       setIsPasswordCriteriaMet(true);
-      const user = await APIUtils.createUser(
-        'signUp',
-        credentials.firstName,
-        credentials.lastName,
-        credentials.emailAddress,
-        credentials.password,
-        credentials.role
+      const cred = await createUserWithEmailAndPassword(
+        auth,
+        emailAddress.trim(),
+        password
       );
-      console.log('This is the user from Signup being logged', user);
+      const displayName = `${firstName.trim()} ${lastName.trim()}`.trim();
+      await updateProfile(cred.user, { displayName });
       setShowModal(true);
+      navigation.navigate('Login');
       setTimeout(() => {
         console.log('Timer started');
         setShowModal(false);
-        navigation.navigate('Login');
       }, 3000);
+
+      await setDoc(
+        doc(db, 'users', cred.user.uid),
+        {
+          uid: cred.user.uid,
+          email: cred.user.email,
+          firstName: firstName.trim(),
+          lastName: lastName.trim(),
+          displayName,
+          role: role,
+          createdAt: serverTimestamp(),
+        },
+        { merge: true }
+      );
+    } catch (e: any) {
+      let msg = 'Account creation failed. Please try again.';
+      switch (e?.code) {
+        case 'auth/email-already-in-use':
+          msg = 'Email is already in use.';
+          break;
+        case 'auth/invalid-email':
+          msg = 'Please enter a valid email.';
+          break;
+        case 'auth/weak-password':
+          msg = 'Password is too weak.';
+          break;
+      }
+      setIsPasswordCriteriaMet(false);
+      setErrorMessage(msg);
+      console.log('Signup error:', e?.code, e?.message);
     }
   };
 
@@ -146,7 +191,8 @@ const Signup: React.FC<Props> = ({ navigation }) => {
                 autoCapitalize="none"
                 onChangeText={(text) =>
                   signUpCredentialHandler('firstName', text)
-                }></TextInput>
+                }
+              />
               <TextInput
                 style={styles.textInput}
                 placeholder="Last Name"
@@ -154,7 +200,8 @@ const Signup: React.FC<Props> = ({ navigation }) => {
                 autoCapitalize="none"
                 onChangeText={(text) =>
                   signUpCredentialHandler('lastName', text)
-                }></TextInput>
+                }
+              />
               <TextInput
                 style={styles.textInput}
                 placeholder="Email"
@@ -162,7 +209,8 @@ const Signup: React.FC<Props> = ({ navigation }) => {
                 autoCapitalize="none"
                 onChangeText={(text) =>
                   signUpCredentialHandler('emailAddress', text)
-                }></TextInput>
+                }
+              />
             </View>
             <View style={styles.passwordContainer}>
               <TextInput
@@ -173,7 +221,8 @@ const Signup: React.FC<Props> = ({ navigation }) => {
                 secureTextEntry={!showPassword.password}
                 onChangeText={(text) =>
                   signUpCredentialHandler('password', text)
-                }></TextInput>
+                }
+              />
               <TouchableOpacity
                 onPress={() => showPasswordHandler('password')}
                 style={styles.passwordIconContainer}>
@@ -193,7 +242,8 @@ const Signup: React.FC<Props> = ({ navigation }) => {
                 secureTextEntry={!showPassword.confirmPassword}
                 onChangeText={(text) =>
                   signUpCredentialHandler('confirmPassword', text)
-                }></TextInput>
+                }
+              />
               <TouchableOpacity
                 onPress={() => showPasswordHandler('confirmPassword')}
                 style={styles.passwordIconContainer}>

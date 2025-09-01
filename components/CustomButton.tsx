@@ -30,7 +30,7 @@ const CustomButton: React.FC<ButtonComponent> = ({
       buttonFunctionOnPress();
       console.log(`This is the navigation path ${navigation}`);
       if (navigation) {
-        // navigation.navigate(navigation);
+        return;
       } else {
         console.log('No navigation path or navigation object provided');
       }
@@ -48,7 +48,11 @@ const CustomButton: React.FC<ButtonComponent> = ({
         buttonAdditionalStyleProps,
       ]}
       onPress={() => buttonPressHandler()}>
-      <Text style={[styles.buttonText, { color: buttonTextColor }]}>
+      <Text
+        style={[
+          styles.buttonText,
+          buttonTextColor ? { color: buttonTextColor } : null,
+        ]}>
         {text}
       </Text>
     </TouchableOpacity>
@@ -58,14 +62,17 @@ const styles = StyleSheet.create({
   buttonContainer: {
     justifyContent: 'center',
     height: height * 0.05,
+    width: '85%',
+    alignSelf: 'center',
     marginTop: height * 0.02,
     borderRadius: 7,
-    backgroundColor: colors.globalSecondaryColor,
+    backgroundColor: colors.globalBackgroundColor,
   },
   buttonText: {
     textAlign: 'center',
     fontWeight: 600,
     fontSize: 16,
+    color: colors.globalWhiteText,
   },
 });
 

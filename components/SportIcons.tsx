@@ -27,7 +27,7 @@ const SportIcons: React.FC<SportIconsProps> = ({
   navigation,
 }) => {
   const sportSelectionHandler = () => {
-    navigation.navigate('ChoosePosition', { sport });
+    navigation.navigate('TeamInfo', { sport });
   };
 
   let IconComponent;

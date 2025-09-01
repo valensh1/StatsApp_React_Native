@@ -2,7 +2,6 @@ import { useState, useCallback, useEffect } from 'react';
 import { useIsFocused } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types/navigation'; // import the type
-import { LinearGradient } from 'expo-linear-gradient';
 import {
   View,
   Text,
@@ -16,10 +15,11 @@ import {
 } from 'react-native';
 import CustomButton from '../components/CustomButton';
 import colors from '../styles/colors_app';
-import APIUtils from '../utils/APIUtilis';
 import AppConstants from '../constants/constants';
 import { useUserContext } from '../store/context/userContext';
 import Logo from '../components/Logo';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../firebaseConfig';
 
 interface Credentials {
   emailAddress: string;
@@ -38,7 +38,7 @@ const defaultCredentials: Credentials = {
 const Login: React.FC<Props> = ({ navigation }) => {
   const { user, setUser } = useUserContext();
 
-  //? HOOKS
+  //? Use State
   const [credentials, setCredentials] =
     useState<Credentials>(defaultCredentials);
   const [isFocused, setIsFocused] = useState<{
@@ -49,9 +49,11 @@ const Login: React.FC<Props> = ({ navigation }) => {
     password: false,
   });
   const [isInputFieldsEmpty, setIsInputFieldsEmpty] = useState<boolean>(true);
+  const [submitting, setSubmitting] = useState(false);
 
   const isScreenFocused = useIsFocused();
 
+  //? HOOKS
   useEffect(() => {
     if (isScreenFocused) {
       setCredentials(defaultCredentials); // Reset input fields when navigating back
@@ -72,28 +74,45 @@ const Login: React.FC<Props> = ({ navigation }) => {
   };
 
   const loginButtonHandler = async () => {
-    if (credentials.password.length >= AppConstants.minimumPasswordCharacters) {
-      try {
-        const loggedInUser = await APIUtils.loginUser(
-          'signInWithPassword',
-          credentials.emailAddress,
-          credentials.password
-        );
-        console.log('This is the logged in user', loggedInUser);
-        if (loggedInUser && loggedInUser[0] === 200) {
-          setUser({
-            idToken: loggedInUser[1].idToken,
-            email: loggedInUser[1].email,
-            displayName: loggedInUser[1].displayName,
-          });
-          navigation.navigate('Home');
-        }
-      } catch (error) {}
-    } else {
+    if (credentials.password.length < AppConstants.minimumPasswordCharacters) {
       Alert.alert(
-        'Log in error',
-        'Passwords must be at least 7 characters in length. Check your credentials and try again!'
+        `Login Error','Passwords must be at least ${AppConstants.minimumPasswordCharacters} characters`
       );
+      return;
+    }
+
+    try {
+      setSubmitting(true);
+      //Firebase method that comes with importing firebase SDK (firebaseConfig.ts allows us to call this method)
+      const firebaseCredentials = await signInWithEmailAndPassword(
+        auth,
+        credentials.emailAddress.trim(),
+        credentials.password
+      );
+      // fetch a fresh ID token (optional; useful if you store it in context)
+      const idToken = await firebaseCredentials.user.getIdToken();
+      setUser({
+        idToken,
+        email: firebaseCredentials.user.email ?? '',
+        displayName: firebaseCredentials.user.displayName ?? '',
+      });
+      navigation.navigate('Home');
+    } catch (e: any) {
+      console.log('Auth error:', e?.code, e?.message);
+      // Map a few common codes to friendly messages
+      let msg = '';
+      if (
+        e?.code === 'auth/invalid-credential' ||
+        e?.code === 'auth/wrong-password' ||
+        e?.code === 'auth/user-not-found'
+      ) {
+        msg = 'Email or password is incorrect.';
+      } else if (e?.code === 'auth/too-many-requests') {
+        msg = 'Too many attempts. Please try again later.';
+      }
+      Alert.alert('Authentication Failed', msg);
+    } finally {
+      setSubmitting(false);
     }
   };
 
