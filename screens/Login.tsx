@@ -76,7 +76,7 @@ const Login: React.FC<Props> = ({ navigation }) => {
   const loginButtonHandler = async () => {
     if (credentials.password.length < AppConstants.minimumPasswordCharacters) {
       Alert.alert(
-        `Login Error','Passwords must be at least ${AppConstants.minimumPasswordCharacters} characters`
+        `Passwords must be at least ${AppConstants.minimumPasswordCharacters} characters`
       );
       return;
     }

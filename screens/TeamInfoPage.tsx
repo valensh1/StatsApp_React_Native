@@ -8,6 +8,7 @@ import {
   TouchableWithoutFeedback,
   Pressable,
   Image,
+  Button,
 } from 'react-native';
 import { useState, useEffect } from 'react';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -88,6 +89,11 @@ const TeamInfoPage = ({ navigation, route }: Props) => {
     }
   };
 
+  const deleteImage = () => {
+    setLogoUri(null);
+    console.log('Deleted the image');
+  };
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <View style={styles.overallContainer}>
@@ -146,7 +152,7 @@ const TeamInfoPage = ({ navigation, route }: Props) => {
           />
         </View>
 
-        <View style={styles.teamLogoContainer}>
+        <View style={styles.teamLogoOverallContainer}>
           <Text style={styles.questionText}>
             Upload your team logo (optional)
           </Text>
@@ -168,11 +174,12 @@ const TeamInfoPage = ({ navigation, route }: Props) => {
               />
             )}
           </Pressable>
+          {logoUri && <Button title={'Delete Image'} onPress={deleteImage} />}
         </View>
 
         <CustomButton
           text={'Next'}
-          buttonAdditionalStyleProps={{ marginTop: '25%' }}
+          buttonAdditionalStyleProps={{ marginTop: '15%' }}
           buttonBackgroundColor={
             isCompleted ? colors.globalBackgroundColor : colors.globalGray
           }
@@ -211,7 +218,8 @@ const styles = StyleSheet.create({
     marginTop: '5%',
     fontSize: 18,
   },
-  teamLogoContainer: {
+  teamLogoOverallContainer: {
+    position: 'relative',
     marginTop: '15%',
     width: '90%',
     alignSelf: 'center',
