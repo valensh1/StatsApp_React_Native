@@ -10,7 +10,7 @@ import useHttp from '../database/http';
 interface Props
   extends NativeStackScreenProps<RootStackParamList, 'HistoricalStats'> {}
 
-const HistoricalPlayerStats: React.FC<Props> = ({ navigation, route }) => {
+const HistoricalPlayerStats = ({ navigation, route }: Props) => {
   const placeholderText = '#FFD700';
   let { stats, calculatedStats } = route.params;
   console.log(`These are the stats that are being passed in ${stats}`);
@@ -43,7 +43,6 @@ const HistoricalPlayerStats: React.FC<Props> = ({ navigation, route }) => {
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}></TextInput>
       </View>
-      <DropdownComponent />
       <View style={styles.inputContainer}>
         <Text style={styles.inputLabels}>Game Date</Text>
         <TextInput style={styles.textInput}></TextInput>

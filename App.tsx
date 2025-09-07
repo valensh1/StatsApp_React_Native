@@ -9,6 +9,7 @@ import ChoosePositionPage from './screens/ChoosePositionPage';
 import StatCounterPage from './screens/StatCounterPage';
 import HistoricalStats from './screens/HistoricalStats';
 import TeamInfoPage from './screens/TeamInfoPage';
+import AdditionalTeamInfoPage from './screens/AdditionalTeamInfoPage';
 import Logo from './components/Logo';
 import {
   NativeStackScreenProps,
@@ -18,7 +19,7 @@ import { RootStackParamList } from './types/navigation'; // import interface
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
-const App: React.FC = () => {
+const App = () => {
   return (
     <>
       <StatusBar style="auto" />
@@ -36,6 +37,11 @@ const App: React.FC = () => {
           <Stack.Screen
             name="TeamInfo"
             component={TeamInfoPage}
+            options={{ title: '' }}
+          />
+          <Stack.Screen
+            name="AdditionalTeamInfo"
+            component={AdditionalTeamInfoPage}
             options={{ title: '' }}
           />
           <Stack.Screen name="ChoosePosition" component={ChoosePositionPage} />

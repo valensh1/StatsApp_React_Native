@@ -10,17 +10,19 @@ interface ButtonComponent {
   buttonTextColor?: string;
   buttonAdditionalStyleProps?: object;
   buttonFunctionOnPress?: () => void; // Pass in a function to be executed upon button press
+  isDisabled?: boolean;
 }
 
 const { height } = Dimensions.get('window');
 
-const CustomButton: React.FC<ButtonComponent> = ({
+const CustomButton = ({
   text,
   navigation,
   buttonBackgroundColor,
   buttonTextColor,
   buttonAdditionalStyleProps,
   buttonFunctionOnPress,
+  isDisabled,
 }: ButtonComponent) => {
   //? USE STATE
 
@@ -47,7 +49,8 @@ const CustomButton: React.FC<ButtonComponent> = ({
         },
         buttonAdditionalStyleProps,
       ]}
-      onPress={() => buttonPressHandler()}>
+      onPress={() => buttonPressHandler()}
+      disabled={isDisabled ?? false}>
       <Text
         style={[
           styles.buttonText,

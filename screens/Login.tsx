@@ -35,7 +35,7 @@ const defaultCredentials: Credentials = {
   password: '',
 };
 
-const Login: React.FC<Props> = ({ navigation }) => {
+const Login = ({ navigation }: Props) => {
   const { user, setUser } = useUserContext();
 
   //? Use State
@@ -134,7 +134,8 @@ const Login: React.FC<Props> = ({ navigation }) => {
               style={[styles.textInput, isFocused.email && styles.focusedState]}
               onFocus={() => setIsFocused({ email: true, password: false })}
               onBlur={() => setIsFocused({ ...isFocused, email: false })}
-              autoCapitalize="none"></TextInput>
+              autoCapitalize="none"
+            />
           </View>
           <View style={styles.singleFieldContainer}>
             <TextInput
@@ -149,7 +150,8 @@ const Login: React.FC<Props> = ({ navigation }) => {
               onFocus={() => setIsFocused({ password: true, email: false })}
               onBlur={() => setIsFocused({ ...isFocused, password: false })}
               autoCapitalize="none"
-              secureTextEntry={true}></TextInput>
+              secureTextEntry={true}
+            />
           </View>
         </View>
         <View style={styles.loginButton}>
@@ -162,6 +164,7 @@ const Login: React.FC<Props> = ({ navigation }) => {
             }
             buttonTextColor={colors.globalWhiteText}
             buttonFunctionOnPress={loginButtonHandler}
+            isDisabled={isInputFieldsEmpty}
           />
         </View>
         <TouchableOpacity
@@ -177,7 +180,6 @@ const styles = StyleSheet.create({
   overallContainer: {
     width: '100%',
     height: height * 1,
-    // backgroundColor: '',
   },
   logo: {
     height: height * 0.35, // Takes screen height calculated by dimensions from React Native and makes the height 35% of that calculated screen height amount. Keeps dynamic.

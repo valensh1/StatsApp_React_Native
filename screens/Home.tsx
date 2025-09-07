@@ -10,7 +10,7 @@ import { auth } from '../firebaseConfig';
 interface Props extends NativeStackScreenProps<RootStackParamList, 'Home'> {}
 const { height } = Dimensions.get('window');
 
-const Home: React.FC<Props> = ({ navigation }) => {
+const Home = ({ navigation }: Props) => {
   //? Variables
   const userName =
     auth.currentUser?.displayName === null ? '' : auth.currentUser?.displayName;

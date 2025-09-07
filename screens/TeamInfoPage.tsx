@@ -19,12 +19,22 @@ import Logo from '../components/Logo';
 import CustomButton from '../components/CustomButton';
 import * as ImagePicker from 'expo-image-picker';
 import * as ImageManipulator from 'expo-image-manipulator';
+import { auth, db, storage } from '../firebaseConfig';
+import {
+  doc,
+  collection,
+  getDoc,
+  setDoc,
+  serverTimestamp,
+} from 'firebase/firestore';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 interface Props
   extends NativeStackScreenProps<RootStackParamList, 'TeamInfo'> {}
 
 const { height } = Dimensions.get('window');
 
+//? Functional Component
 const TeamInfoPage = ({ navigation, route }: Props) => {
   const { sport } = route.params;
 
@@ -32,7 +42,7 @@ const TeamInfoPage = ({ navigation, route }: Props) => {
   const [teamType, setTeamType] = useState<
     'Travel/Club' | 'Rec/Park' | 'School' | ''
   >('');
-  const [teamName, setTeamName] = useState<string | null>(null);
+  const [teamName, setTeamName] = useState<string>('');
   const [logoUri, setLogoUri] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
   const [isCompleted, setIsCompleted] = useState<boolean>(false);
@@ -46,7 +56,7 @@ const TeamInfoPage = ({ navigation, route }: Props) => {
     }
   }, [teamType, teamName, logoUri]);
 
-  const buttonPressHandler = (
+  const teamTypeHandler = (
     type: 'Travel/Club' | 'Rec/Park' | 'School'
   ): void => {
     setTeamType(type);
@@ -94,6 +104,92 @@ const TeamInfoPage = ({ navigation, route }: Props) => {
     console.log('Deleted the image');
   };
 
+  // Uploads a local file URI to Storage, returns the downloadURL and storage path
+  const uploadLogoAsync = async (localUri: string, storagePath: string) => {
+    // fetch the file and turn it into a blob
+    const res = await fetch(localUri);
+    const blob = await res.blob();
+
+    const fileRef = ref(storage, storagePath);
+    await uploadBytes(fileRef, blob);
+    const downloadURL = await getDownloadURL(fileRef);
+    return { downloadURL, path: storagePath };
+  };
+
+  const buttonHandler = async () => {
+    try {
+      const user = auth.currentUser;
+      if (!user) {
+        console.log('No authenticated user – please log in first.');
+        navigation.navigate('Login');
+        return;
+      }
+      const uid = user.uid;
+
+      // make a new doc ref with an auto id
+      const teamRef = doc(collection(db, 'teams'));
+      console.log('uid:', uid);
+      console.log('team id:', teamRef.id);
+      console.log('team path:', teamRef.path);
+
+      // optional logo upload
+      let logoUrl: string | null = null;
+      let logoStoragePath: string | null = null;
+      if (logoUri) {
+        try {
+          const res = await fetch(logoUri);
+          const blob = await res.blob();
+          const path = `teamLogos/${uid}/${teamRef.id}.jpg`;
+          const fileRef = ref(storage, path);
+          await uploadBytes(fileRef, blob);
+          logoUrl = await getDownloadURL(fileRef);
+          logoStoragePath = path;
+          console.log('Logo uploaded OK:', logoUrl);
+        } catch (uploadErr: any) {
+          console.log(
+            'Logo upload failed:',
+            uploadErr?.code,
+            uploadErr?.message ?? uploadErr
+          );
+          // continue without logo
+        }
+      }
+
+      const payload = {
+        id: teamRef.id,
+        createdBy: uid,
+        sport, // from route.params
+        teamType, // Travel/Club | Rec/Park | School
+        teamName: (teamName ?? '').trim(),
+        teamNameLower: (teamName ?? '').trim().toLowerCase(),
+        logoUrl, // can be null
+        logoStoragePath, // can be null
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      };
+
+      console.log('Writing payload:', payload);
+      await setDoc(teamRef, payload, { merge: true });
+      console.log('setDoc OK');
+
+      // read it back to prove it exists
+      const snap = await getDoc(teamRef);
+      console.log('Successful creation of Team Information', snap.exists());
+      if (snap.exists()) console.log('[saveTeam] data:', snap.data());
+
+      // e.g. navigate to next step with teamId
+      // navigation.navigate('TeamDashboard', { teamId: teamRef.id });
+    } catch (e: any) {
+      console.log('Firestore write FAILED:', e?.code, e?.message ?? e);
+    } finally {
+      navigation.navigate('AdditionalTeamInfo', {
+        sport,
+        teamName,
+        teamType,
+      });
+    }
+  };
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <View style={styles.overallContainer}>
@@ -115,7 +211,7 @@ const TeamInfoPage = ({ navigation, route }: Props) => {
               buttonAdditionalStyleProps={{
                 width: '27.5%',
               }}
-              buttonFunctionOnPress={() => buttonPressHandler('Travel/Club')}
+              buttonFunctionOnPress={() => teamTypeHandler('Travel/Club')}
             />
             <CustomButton
               text={'Rec/Park'}
@@ -125,7 +221,7 @@ const TeamInfoPage = ({ navigation, route }: Props) => {
                   : colors.globalGray
               }
               buttonAdditionalStyleProps={{ width: '27.5%' }}
-              buttonFunctionOnPress={() => buttonPressHandler('Rec/Park')}
+              buttonFunctionOnPress={() => teamTypeHandler('Rec/Park')}
             />
             <CustomButton
               text={'School'}
@@ -135,7 +231,7 @@ const TeamInfoPage = ({ navigation, route }: Props) => {
                   : colors.globalGray
               }
               buttonAdditionalStyleProps={{ width: '27.5%' }}
-              buttonFunctionOnPress={() => buttonPressHandler('School')}
+              buttonFunctionOnPress={() => teamTypeHandler('School')}
             />
           </View>
         </View>
@@ -183,6 +279,8 @@ const TeamInfoPage = ({ navigation, route }: Props) => {
           buttonBackgroundColor={
             isCompleted ? colors.globalBackgroundColor : colors.globalGray
           }
+          buttonFunctionOnPress={buttonHandler}
+          isDisabled={!isCompleted}
         />
       </View>
     </TouchableWithoutFeedback>

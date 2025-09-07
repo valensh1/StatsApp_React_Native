@@ -13,7 +13,7 @@ import colors from '../styles/colors_app';
 interface Props
   extends NativeStackScreenProps<RootStackParamList, 'StatCounter'> {}
 
-const StatCounterPage: React.FC<Props> = ({ navigation, route }) => {
+const StatCounterPage = ({ navigation, route }: Props) => {
   //? Variables
   // Retrieves and destructures sport and position from the URL
   let { sport, position } = route.params;

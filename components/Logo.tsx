@@ -7,7 +7,7 @@ interface LogoSize {
   marginTop?: number;
 }
 
-const Logo: React.FC<LogoSize> = ({ height, width, marginTop }) => {
+const Logo = ({ height, width, marginTop }: LogoSize) => {
   return (
     <Image
       source={require('../images/YSG_Logo.png')}

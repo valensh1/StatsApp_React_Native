@@ -8,7 +8,7 @@ import colors from '../styles/colors_app';
 interface Props
   extends NativeStackScreenProps<RootStackParamList, 'ChoosePosition'> {}
 
-const ChoosePositionPage: React.FC<Props> = ({ navigation, route }) => {
+const ChoosePositionPage = ({ navigation, route }: Props) => {
   const { sport } = route.params; // <-- access your sport param // Retrieves the sport from the URL path
   const positions: string[] = sportPositions[sport.toLowerCase()]; // Retrieves the sport positions
 

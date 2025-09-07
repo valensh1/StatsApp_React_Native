@@ -51,7 +51,7 @@ const defaultSignupCredentials = {
   role: '',
 };
 
-const Signup: React.FC<Props> = ({ navigation }) => {
+const Signup = ({ navigation }: Props) => {
   //? USE STATE
   const [credentials, setCredentials] = useState<SignupCredentials>(
     defaultSignupCredentials
@@ -276,6 +276,7 @@ const Signup: React.FC<Props> = ({ navigation }) => {
               }
               buttonTextColor={colors.globalWhiteText}
               buttonFunctionOnPress={buttonFunctionOnPress}
+              isDisabled={isInputFieldsEmpty}
             />
           </View>
         </View>
