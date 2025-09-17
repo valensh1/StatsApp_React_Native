@@ -1,3 +1,4 @@
+import React from 'react';
 import { View, Text, Dimensions, StyleSheet, TextInput } from 'react-native';
 import { useState } from 'react';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
