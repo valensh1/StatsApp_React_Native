@@ -1,4 +1,3 @@
-import React from 'react';
 import { View, Text, Dimensions, Button, StyleSheet } from 'react-native';
 import Logo from '../components/Logo';
 import CustomButton from '../components/CustomButton';

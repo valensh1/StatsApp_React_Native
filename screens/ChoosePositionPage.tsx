@@ -1,4 +1,3 @@
-import React from 'react';
 import sportPositions from '../database/positions';
 import { View, Text, StyleSheet, Pressable } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';

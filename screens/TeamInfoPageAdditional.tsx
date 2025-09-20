@@ -1,4 +1,3 @@
-import React from 'react';
 import { View, Text, Dimensions, StyleSheet, TextInput } from 'react-native';
 import { useState } from 'react';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -6,7 +5,10 @@ import { RootStackParamList } from '../types/navigation'; // import the type
 import Logo from '../components/Logo';
 import colors from '../styles/colors_app';
 import CustomButton from '../components/CustomButton';
+import API from '../apis/api';
 import axios from 'axios';
+import debounce from 'lodash.debounce';
+import { useMemo } from 'react';
 
 interface Props
   extends NativeStackScreenProps<RootStackParamList, 'AdditionalTeamInfo'> {}
@@ -14,8 +16,14 @@ interface Props
 const { height } = Dimensions.get('window');
 
 const AdditionalTeamInfoPage = ({ navigation, route }: Props) => {
+  //? Use Memo
+  const debouncedGetCity = useMemo(
+    () => debounce((textEntered: string) => API.getCityAPI(textEntered), 800),
+    []
+  );
+
   //? Use State
-  const [zipCode, setZipCode] = useState<string>('');
+  const [cityOrZipCode, setCityOrZipCode] = useState<string>('');
 
   const { sport, teamName, teamType } = route.params;
   console.log(
@@ -26,15 +34,15 @@ const AdditionalTeamInfoPage = ({ navigation, route }: Props) => {
   );
 
   const inputHandler = (text: string) => {
-    console.log('This is the text entered', text);
-    setZipCode(text);
+    debouncedGetCity(text);
+    setCityOrZipCode;
   };
 
   const buttonHandler = async () => {
     try {
       // Zip Code API
       const response = await axios.get(
-        `http://api.zippopotam.us/us/${zipCode}`
+        `http://api.zippopotam.us/us/${cityOrZipCode}`
       );
       console.log('This is the full API response');
       console.log(
@@ -61,7 +69,7 @@ const AdditionalTeamInfoPage = ({ navigation, route }: Props) => {
             style={styles.textInput}
             placeholder="city / zip code"
             onChangeText={inputHandler}
-            // value={zipCode}
+            value={cityOrZipCode}
           />
         </View>
         <View style={styles.textInputContainer}>

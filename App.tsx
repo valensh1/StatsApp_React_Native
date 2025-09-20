@@ -9,7 +9,7 @@ import ChoosePositionPage from './screens/ChoosePositionPage';
 import StatCounterPage from './screens/StatCounterPage';
 import HistoricalStats from './screens/HistoricalStats';
 import TeamInfoPage from './screens/TeamInfoPage';
-import AdditionalTeamInfoPage from './screens/AdditionalTeamInfoPage';
+import TeamInfoPageAdditional from './screens/TeamInfoPageAdditional';
 import Logo from './components/Logo';
 import {
   NativeStackScreenProps,
@@ -41,7 +41,7 @@ const App = () => {
           />
           <Stack.Screen
             name="AdditionalTeamInfo"
-            component={AdditionalTeamInfoPage}
+            component={TeamInfoPageAdditional}
             options={{ title: '' }}
           />
           <Stack.Screen name="ChoosePosition" component={ChoosePositionPage} />
