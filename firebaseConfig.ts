@@ -16,7 +16,7 @@ const firebaseConfig = {
   measurementId: extra.FIREBASE_MEASUREMENT_ID,
 };
 
-const app = initializeApp(firebaseConfig);
+export const app = initializeApp(firebaseConfig);
 
 export const db = initializeFirestore(app, {
   experimentalAutoDetectLongPolling: true, // detects RN env automatically

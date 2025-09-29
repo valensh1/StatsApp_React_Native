@@ -5,7 +5,12 @@ export interface RootStackParamList {
   Home: undefined;
   ChooseSport: undefined;
   TeamInfo: { sport: string };
-  AdditionalTeamInfo: { sport: string; teamName: string; teamType: string };
+  AdditionalTeamInfo: {
+    sport: string;
+    teamName: string;
+    teamType: string;
+    teamRefId: string;
+  };
   // AdditionalTeamInfo: undefined;
   ChoosePosition: { sport: string };
   StatCounter: { sport: string; position: string };

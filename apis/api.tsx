@@ -1,4 +1,7 @@
 import axios from 'axios';
+import Constants from 'expo-constants';
+
+const { GOOGLE_MAPS_API_KEY } = Constants.expoConfig?.extra || {};
 
 class API {
   public static async getCityAPI(cityOrZip: string) {
@@ -12,7 +15,7 @@ class API {
         {
           headers: {
             'Content-Type': 'application/json',
-            'X-Goog-Api-Key': 'AIzaSyDsQgSY4x_Y24lRuW6iPVuy1c8YnbNAcF4',
+            'X-Goog-Api-Key': GOOGLE_MAPS_API_KEY,
             'X-Goog-FieldMask':
               'places.id,places.displayName,places.formattedAddress',
           },
@@ -20,11 +23,19 @@ class API {
       );
       console.log(`This is the full response`, response.data.places[0]);
       console.log(
-        `This is the response: ${response.data.places[0].displayName.text}`
+        `This is the place name: ${response.data.places[0].displayName.text}`
       );
-      return response.data.places[0].formattedAddress;
+      console.log(
+        `This is the formatted address: ${response.data.places[0].formattedAddress}`
+      );
+      return {
+        formattedName: response.data.places[0].displayName.text,
+        formattedAddress: response.data.places[0].formattedAddress,
+      };
     } catch (error: any) {
-      console.log(`Unable to retrieve a city from the text entered.`);
+      console.log(
+        `Unable to retrieve a city or place from the text entered. Try again!`
+      );
     }
   }
 }

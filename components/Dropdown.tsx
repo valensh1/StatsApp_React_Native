@@ -4,7 +4,7 @@ import { Dropdown } from 'react-native-element-dropdown';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import colors from '../styles/colors_app';
 
-interface DropdownData {
+export interface DropdownData {
   label: string;
   value: string;
 }
@@ -15,6 +15,7 @@ interface DropdownProps {
 }
 
 const DropdownComponent: React.FC<DropdownProps> = ({ data, onSelect }) => {
+  console.log('This is the data for dropdown', data);
   const [value, setValue] = useState<string | null>(null);
   const [isFocus, setIsFocus] = useState(false);
 
@@ -46,7 +47,7 @@ const DropdownComponent: React.FC<DropdownProps> = ({ data, onSelect }) => {
           <AntDesign
             style={styles.icon}
             color={colors.globalGray}
-            name="Safety"
+            name="safety"
             size={20}
           />
         )}

@@ -117,6 +117,7 @@ const TeamInfoPage = ({ navigation, route }: Props) => {
   };
 
   const buttonHandler = async () => {
+    let teamRefDocumentId = '';
     try {
       const user = auth.currentUser;
       if (!user) {
@@ -128,6 +129,7 @@ const TeamInfoPage = ({ navigation, route }: Props) => {
 
       // make a new doc ref with an auto id
       const teamRef = doc(collection(db, 'teams'));
+      teamRefDocumentId = teamRef.id;
       console.log('uid:', uid);
       console.log('team id:', teamRef.id);
       console.log('team path:', teamRef.path);
@@ -186,6 +188,7 @@ const TeamInfoPage = ({ navigation, route }: Props) => {
         sport,
         teamName,
         teamType,
+        teamRefId: teamRefDocumentId,
       });
     }
   };

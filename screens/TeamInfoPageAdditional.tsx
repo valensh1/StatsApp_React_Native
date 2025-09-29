@@ -1,5 +1,5 @@
 import { View, Text, Dimensions, StyleSheet, TextInput } from 'react-native';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types/navigation'; // import the type
 import Logo from '../components/Logo';
@@ -9,6 +9,8 @@ import API from '../apis/api';
 import axios from 'axios';
 import debounce from 'lodash.debounce';
 import { useMemo } from 'react';
+import Dropdown, { DropdownData } from '../components/Dropdown';
+import useHttp from '../database/http';
 
 interface Props
   extends NativeStackScreenProps<RootStackParamList, 'AdditionalTeamInfo'> {}
@@ -16,42 +18,82 @@ interface Props
 const { height } = Dimensions.get('window');
 
 const AdditionalTeamInfoPage = ({ navigation, route }: Props) => {
+  const { pullAgeGroups, patchRecord } = useHttp();
+
+  //? UseEffect
+  useEffect(() => {
+    const fetchAgeGroups = async () => {
+      const groups = await pullAgeGroups('allAgeGroupList', 'age');
+      console.log(`This is the groups -> ${JSON.stringify(groups)}`);
+      setAgeGroupDropdown(groups);
+    };
+    fetchAgeGroups();
+  }, []);
+
+  //? Use State
+  const [userInputCityOrZipCode, setUserInputCityOrZipCode] =
+    useState<string>('');
+  const [cityFormattedAddress, setCityFormattedAddress] = useState<string>(''); // Need to add this to database
+  const [userInputVenue, setUserInputVenue] = useState<string>('');
+  const [formattedVenueAddress, setFormattedVenueAddress] =
+    useState<string>('');
+  const [formattedVenueName, setFormattedVenueName] = useState<string>(''); // Need to add this to database
+  const [ageGroupDropdown, setAgeGroupDropdown] = useState<DropdownData[]>([]);
+  const [ageGroupSelected, setAgeGroupSelected] = useState<string>(''); // Need to add this to database
+
   //? Use Memo
-  const debouncedGetCity = useMemo(
-    () => debounce((textEntered: string) => API.getCityAPI(textEntered), 800),
+  const getFormattedCity = useMemo(
+    () =>
+      debounce(async (field: string, textEntered: string) => {
+        const response:
+          | { formattedName: string; formattedAddress: string }
+          | undefined = await API.getCityAPI(textEntered);
+        if (!response) return;
+        const { formattedAddress, formattedName } = response;
+        if (field === 'city') {
+          setCityFormattedAddress(formattedAddress);
+        } else {
+          setFormattedVenueName(formattedName);
+          setFormattedVenueAddress(formattedAddress);
+        }
+      }, 800),
     []
   );
 
-  //? Use State
-  const [cityOrZipCode, setCityOrZipCode] = useState<string>('');
-
-  const { sport, teamName, teamType } = route.params;
+  const { sport, teamName, teamType, teamRefId } = route.params;
   console.log(
     'This is the additional team information',
     sport,
     teamName,
-    teamType
+    teamType,
+    teamRefId
   );
 
-  const inputHandler = (text: string) => {
-    debouncedGetCity(text);
-    setCityOrZipCode;
+  const inputHandler = (field: string, text: string) => {
+    getFormattedCity(field, text);
+    if (field === 'city') {
+      setUserInputCityOrZipCode(text);
+    } else {
+      setUserInputVenue(text);
+    }
   };
 
   const buttonHandler = async () => {
     try {
-      // Zip Code API
-      const response = await axios.get(
-        `http://api.zippopotam.us/us/${cityOrZipCode}`
-      );
-      console.log('This is the full API response');
-      console.log(
-        `This is the response`,
-        response.data.places[0]['place name']
-      );
+      console.log('Button has been clicked');
+      patchRecord(teamRefId, {
+        teamCityAddress: cityFormattedAddress,
+        teamVenueName: formattedVenueName,
+        teamVenueAddress: formattedVenueAddress,
+        teamAgeGroup: ageGroupSelected,
+      });
     } catch (error: any) {
       console.log('Not a valid zip code');
     }
+  };
+
+  const dropdownHandler = (text: string) => {
+    setAgeGroupSelected(text);
   };
 
   return (
@@ -68,21 +110,30 @@ const AdditionalTeamInfoPage = ({ navigation, route }: Props) => {
           <TextInput
             style={styles.textInput}
             placeholder="city / zip code"
-            onChangeText={inputHandler}
-            value={cityOrZipCode}
+            onChangeText={(text) => inputHandler('city', text)}
+            value={userInputCityOrZipCode}
           />
         </View>
         <View style={styles.textInputContainer}>
           <Text style={styles.labels}>
             What venue will your {sport} team play at?
           </Text>
-          <TextInput style={styles.textInput} />
+          <TextInput
+            style={styles.textInput}
+            onChangeText={(text) => inputHandler('venue', text)}
+            value={userInputVenue}
+          />
         </View>
         <View style={styles.textInputContainer}>
-          <Text style={styles.labels}>
+          <Text style={[styles.labels, styles.labelForDropdown]}>
             What age group is your {sport} team?
           </Text>
-          <TextInput style={styles.textInput} />
+          <Dropdown
+            data={ageGroupDropdown}
+            onSelect={(selection) => {
+              dropdownHandler(selection);
+            }}
+          />
         </View>
       </View>
       <CustomButton
@@ -115,6 +166,9 @@ const styles = StyleSheet.create({
   },
   labels: {
     fontSize: 18,
+  },
+  labelForDropdown: {
+    marginBottom: '-5%',
   },
   textInput: {
     borderColor: colors.globalGray,

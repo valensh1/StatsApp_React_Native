@@ -1,9 +1,11 @@
 import { useUserContext } from '../store/context/userContext';
 import axios from 'axios';
 import Constants from 'expo-constants';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { db } from '../firebaseConfig';
 
 // Pull your Firebase URL from expoConfig.extra
-const { FIREBASE_URL } = Constants.expoConfig?.extra || {};
+const { FIREBASE_URL, FIREBASE_PROJECT_ID } = Constants.expoConfig?.extra || {};
 
 const useHttp = () => {
   const { user } = useUserContext(); // Uses `useUserContext` to get the user
@@ -43,7 +45,34 @@ const useHttp = () => {
     }
   };
 
-  return { postData, savePlayerAccountData }; // Returns `postData` so it can be called in any component
+  const pullAgeGroups = async (document: string, field: string) => {
+    const ref = doc(db, 'teamAgeGroups', document); // <- docId
+    const snap = await getDoc(ref);
+
+    if (!snap.exists()) return [];
+
+    // ✅ The field inside this doc is called "age"
+    const arr: string[] = (snap.get(field) as string[]) ?? [];
+
+    // Format for your dropdown
+    return arr.map((v) => ({ label: v, value: v }));
+  };
+
+  const patchRecord = async (
+    documentId: string,
+    fields: { [key: string]: string }
+  ): Promise<boolean> => {
+    try {
+      const ref = doc(db, 'teams', documentId);
+      await setDoc(ref, { ...fields }, { merge: true });
+      return true;
+    } catch (error: any) {
+      console.log('Error updating Database', error);
+      return false;
+    }
+  };
+
+  return { postData, savePlayerAccountData, pullAgeGroups, patchRecord }; // Returns functions so it can be called in any component
 };
 
 export default useHttp;
